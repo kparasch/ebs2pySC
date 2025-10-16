@@ -33,6 +33,8 @@ class Interface:
 
     def set_many(self, data: dict[str, float]):
         '''
+        perhaps there is a specific host you use to set all corrector settings?
+
         sets many magnet strengths in the machine (physics units), integrated or not.
         e.g. ebs.set_many({'SD1A-C01-H': 100e-6, 'SD1A-C01-V': 200e-6})
 

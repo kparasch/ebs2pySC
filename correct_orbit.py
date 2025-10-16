@@ -29,6 +29,6 @@ trims = orbit_correction(get_orbit=ebs.get_orbit, settings=ebs, response_matrix=
 trims = orbit_correction(get_orbit=ebs.get_orbit, settings=ebs, response_matrix=RM, correctors=CORR, method='tikhonov', parameter=10, apply=True)
 trims = orbit_correction(get_orbit=ebs.get_orbit, settings=ebs, response_matrix=RM, correctors=CORR, method='micado', parameter=3, apply=True)
 
-# or something like:
+# or something like this: (especially if we use dedicated tango host to set all correctors at once)
 # trims = orbit_correction(get_orbit=ebs.get_orbit, settings=ebs, response_matrix=RM, correctors=CORR, method='tikhonov', parameter=10, apply=False)
 # ebs.set_many(trims)
