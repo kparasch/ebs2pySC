@@ -1,3 +1,13 @@
+from tango import AttributeProxy, DeviceProxy
+import os
+import time
+
+os.environ['TANGO_HOST'] = 'acs.esrf.fr:10000,acs.esrf.fr:11000'
+# os.environ['TANGO_HOST'] = 'ebs-simu-1:10000'
+
+present_host = os.environ['TANGO_HOST']
+print(present_host)
+
 class Interface:
     def get_orbit(self):
         '''
@@ -6,7 +16,13 @@ class Interface:
 
         we should make sure here that we can call this function twice and not get the same reading (i.e. wait that the orbit has refreshed).
         '''
-        pass
+
+        orb_ref_h = AttributeProxy('srdiag/bpm/all/All_SA_HPosition').read().value
+        orb_ref_v = AttributeProxy('srdiag/bpm/all/All_SA_VPosition').read().value
+        
+        time.sleep(1) # 1 second polling time
+
+        return orb_ref_h, orb_ref_v
 
     def get(self, name: str) -> float:
         '''
