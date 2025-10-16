@@ -8,6 +8,9 @@ os.environ['TANGO_HOST'] = 'acs.esrf.fr:10000,acs.esrf.fr:11000'
 present_host = os.environ['TANGO_HOST']
 print(present_host)
 
+HBPM = AttributeProxy('srdiag/bpm/all/All_SA_HPosition')
+VBPM = AttributeProxy('srdiag/bpm/all/All_SA_VPosition')
+
 hst = DeviceProxy('srmag/hst/all')  # 384 hor steerers (include DQ hor steerer)
 vst = DeviceProxy('srmag/vst/all')  # 288 ver steerers
 sqp = DeviceProxy('srmag/sqp/all')  # 288 skew quads
@@ -32,8 +35,8 @@ class Interface:
         we should make sure here that we can call this function twice and not get the same reading (i.e. wait that the orbit has refreshed).
         '''
 
-        orb_ref_h = AttributeProxy('srdiag/bpm/all/All_SA_HPosition').read().value
-        orb_ref_v = AttributeProxy('srdiag/bpm/all/All_SA_VPosition').read().value
+        orb_ref_h = HBPM.read().value
+        orb_ref_v = VBPM.read().value
         
         time.sleep(1) # 1 second polling time
 
@@ -180,7 +183,6 @@ class Interface:
                     oct_SetPoint = oct.CorrectionStrengths.read().w_value # single call to read array
                     oct_apply = True
                 oct_SetPoint[oct_names.index(key)] = value
-
 
         # apply values
         if hst_apply:
