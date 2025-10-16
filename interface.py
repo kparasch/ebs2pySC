@@ -96,19 +96,19 @@ class Interface:
                     sqp_SetPoint = sqp.CorrectionStrengths.read().w_value # single call to read array
                 # find name index
                 data_k0[name] = sqp_SetPoint[sqp_names.index(name)]
-            if "sext" in name: 
+            if "m-s" in name: 
                 # get set points only if a name is requested
                 if sext_SetPoint is []:
                     sext_SetPoint = sext.CorrectionStrengths.read().w_value # single call to read array
                 # find name index
                 data_k0[name] = sext_SetPoint[sext_names.index(name)]
-            if "quad" in name: 
+            if "m-q" in name: 
                 # get set points only if a name is requested
                 if quad_SetPoint is []:
                     quad_SetPoint = quad.CorrectionStrengths.read().w_value # single call to read array
                 # find name index
                 data_k0[name] = quad_SetPoint[quad_names.index(name)]
-            if "oct" in name: 
+            if "m-o" in name: 
                 # get set points only if a name is requested
                 if oct_SetPoint is []:
                     oct_SetPoint = oct.CorrectionStrengths.read().w_value # single call to read array
@@ -126,11 +126,74 @@ class Interface:
 
         waiting time to make sure power supply is settled and eddy currents are decayed to be handled also here.
         '''
-
-        # get present values
         
-        # change only magnets requested
+        # init set points
+        hst_SetPoint = []
+        vst_SetPoint = []
+        sqp_SetPoint = []
+        sext_SetPoint = []
+        quad_SetPoint = []
+        oct_SetPoint = []
+
+        # apply setting to array:
+        hst_apply = False
+        vst_apply = False
+        sqp_apply = False
+        sext_apply =False
+        quad_apply = False
+        oct_apply = False
+
+        # loop values to change
+        for key, value in data.items():
+            if "hst" in key:
+                if hst_SetPoint == []:
+                    hst_SetPoint = hst.CorrectionStrengths.read().w_value # single call to read array
+                    hst_apply = True
+                hst_SetPoint[hst_names.index(key)] = value
+
+            if "vst" in key:
+                if vst_SetPoint == []:
+                    vst_SetPoint = vst.CorrectionStrengths.read().w_value # single call to read array
+                    vst_apply = True
+                vst_SetPoint[vst_names.index(key)] = value
+
+            if "sqp" in key:
+                if sqp_SetPoint == []:
+                    sqp_SetPoint = sqp.CorrectionStrengths.read().w_value # single call to read array
+                    sqp_apply = True
+                sqp_SetPoint[sqp_names.index(key)] = value
+
+            if "m-s" in key:
+                if sext_SetPoint == []:
+                    sext_SetPoint = sext.CorrectionStrengths.read().w_value # single call to read array
+                    sext_apply = True
+                sext_SetPoint[sext_names.index(key)] = value
+
+            if "m-q" in key:
+                if quad_SetPoint == []:
+                    quad_SetPoint = quad.CorrectionStrengths.read().w_value # single call to read array
+                    quad_apply = True
+                quad_SetPoint[quad_names.index(key)] = value
+
+            if "m-o" in key:
+                if oct_SetPoint == []:
+                    oct_SetPoint = oct.CorrectionStrengths.read().w_value # single call to read array
+                    oct_apply = True
+                oct_SetPoint[oct_names.index(key)] = value
+
 
         # apply values
+        if hst_apply:
+            hst.CorrectionStrengths = hst_SetPoint
+        if vst_apply:
+            vst.CorrectionStrengths = vst_SetPoint
+        if sqp_apply:
+            sqp.CorrectionStrengths = sqp_SetPoint
+        if quad_apply:
+            quad.CorrectionStrengths = quad_SetPoint
+        if sext_apply:
+            sext.CorrectionStrengths = sext_SetPoint
+        if oct_apply:
+            oct.CorrectionStrengths = oct_SetPoint
 
         pass
