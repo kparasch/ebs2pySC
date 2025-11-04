@@ -8,6 +8,8 @@ os.environ['TANGO_HOST'] = 'acs.esrf.fr:10000,acs.esrf.fr:11000'
 present_host = os.environ['TANGO_HOST']
 print(present_host)
 
+master_source = AttributeProxy('sy/ms/1/Frequency')
+
 HRefOrb = AttributeProxy('sr/beam-orbitcor/svd-h/BumpOrbit')
 VRefOrb = AttributeProxy('sr/beam-orbitcor/svd-h/BumpOrbit')
 
