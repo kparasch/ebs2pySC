@@ -1,5 +1,5 @@
 from pySC import generate_SC
-from pySC.apps.interface import pySCOrbitInterface
+from pySC.apps.interface import pySCOrbitInterface, get_ref_orbit
 from pySC.apps import orbit_correction
 from pySC import ResponseMatrix
 import numpy as np
@@ -12,7 +12,9 @@ interface.set('6/B1L', 13.7e-6)
 interface.set('175/B1L', 22e-6)
 interface.set('959/A1L', 9e-6)
 
-ref_x, ref_y = SC.bpm_system.capture_orbit(use_design=True)
+ref_x, ref_y = interface.get_ref_orbit()
+# ref_x, ref_y = SC.bpm_system.capture_orbit(use_design=True)
+
 reference = np.concat((ref_x.flatten(order='F'), ref_y.flatten(order='F')))
 
 response_matrix = ResponseMatrix.from_json('ideal_orm.json')
