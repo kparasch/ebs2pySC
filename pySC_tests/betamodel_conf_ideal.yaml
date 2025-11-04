@@ -13,14 +13,14 @@ magnets:
     components: 
       - B1L: null
       - A1L: null 
-      - A2: null
-      - B3: null
+      - A2L: null
+      - B3L: null
     invert:
       - B1L
   octupoles: 
     regex: ^O
     components: 
-      - B4: null
+      - B4L: null
   correctors:
     regex: ^SH
     components:
@@ -52,8 +52,8 @@ tuning:
     model_RM_folder: ./
 
     multipoles:
-      - sextupoles: B3
-      - octupoles: B4
+      - sextupoles: B3L
+      - octupoles: B4L
 
     bba_magnets:
       - quadrupoles: B2
