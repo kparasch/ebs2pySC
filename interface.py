@@ -8,6 +8,9 @@ os.environ['TANGO_HOST'] = 'acs.esrf.fr:10000,acs.esrf.fr:11000'
 present_host = os.environ['TANGO_HOST']
 print(present_host)
 
+HRefOrb = AttributeProxy('sr/beam-orbitcor/svd-h/BumpOrbit')
+VRefOrb = AttributeProxy('sr/beam-orbitcor/svd-h/BumpOrbit')
+
 HBPM = AttributeProxy('srdiag/bpm/all/All_SA_HPosition')
 VBPM = AttributeProxy('srdiag/bpm/all/All_SA_VPosition')
 
@@ -27,6 +30,21 @@ quad_names = quad.MagnetNames
 oct_names = oct.MagnetNames
 
 class Interface:
+    def get_ref_orbit(self):
+        '''
+        returns the reference orbit of the machine in two lists/arrays:
+        e.g. x, y = ebs.get_ref_orbit()
+
+        we should make sure here that we can call this function twice and not get the same reading (i.e. wait that the orbit has refreshed).
+        '''
+
+        orb_ref_h = HRefOrb.read().value
+        orb_ref_v = VRefOrb.read().value
+        
+        time.sleep(1) # 1 second polling time
+
+        return orb_ref_h, orb_ref_v
+
     def get_orbit(self):
         '''
         returns the orbit of the machine in two lists/arrays:
@@ -35,12 +53,12 @@ class Interface:
         we should make sure here that we can call this function twice and not get the same reading (i.e. wait that the orbit has refreshed).
         '''
 
-        orb_ref_h = HBPM.read().value
-        orb_ref_v = VBPM.read().value
+        orb_h = HBPM.read().value
+        orb_v = VBPM.read().value
         
         time.sleep(1) # 1 second polling time
 
-        return orb_ref_h, orb_ref_v
+        return orb_h, orb_v
 
     def get(self, name: str) -> float:
         '''
