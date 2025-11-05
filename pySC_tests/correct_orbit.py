@@ -1,5 +1,5 @@
 from pySC import generate_SC
-from pySC.apps.interface import pySCOrbitInterface, get_ref_orbit
+from pySC.apps.interface import pySCOrbitInterface
 from pySC.apps import orbit_correction
 from pySC import ResponseMatrix
 import numpy as np
