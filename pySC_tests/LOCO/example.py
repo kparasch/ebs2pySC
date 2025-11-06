@@ -196,6 +196,13 @@ def main():
         auto_correct_delta=loco_options.auto_correct_delta,
         fixedpathlength= fixedpathlength,
         fit_cfg=fit_cfg,
+
+        # --- Jacopians files ---
+
+        quad_jacobian_file="output/jacobians/quads/J_quads_iter1_0.0001urad_200Hz.h5",
+        skew_jacobian_file=None,
+        quads_tilt_jacobian_file=None,
+        force_recompute=False
     )
 
     # --- save results ---
