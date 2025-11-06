@@ -1,0 +1,8 @@
+# macOS and IDE junk
+.DS_Store
+.idea/
+
+# Python cache
+__pycache__/
+*.pyc
+
