@@ -7,7 +7,7 @@ magnets:
   quadrupoles:
     regex: ^QD|^QF
     components: 
-      - B2: null
+      - B2L: null
   sextupoles:
     regex: ^SJ|^SF|^SD|^SI
     components: 
@@ -26,6 +26,7 @@ magnets:
     components:
       - B1L: null
       - A1L: null
+      - A2L: null
     invert:
       - B1L
 
@@ -56,4 +57,4 @@ tuning:
       - octupoles: B4L
 
     bba_magnets:
-      - quadrupoles: B2
+      - quadrupoles: B2L
