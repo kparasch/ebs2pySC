@@ -32,6 +32,18 @@ quad_names = quad.MagnetNames
 oct_names = oct.MagnetNames
 
 class Interface:
+
+    def get_rf_main_frequency(self):
+        """ get master source frequency in Hz"""
+
+        return master_source.read().value
+    
+    def set_rf_main_frequency(self, frequency):
+        """ set absolute value of master source frequency in Hz"""
+
+        master_source.write(frequency)
+
+
     def get_ref_orbit(self):
         '''
         returns the reference orbit of the machine in two lists/arrays:
