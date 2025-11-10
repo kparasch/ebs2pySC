@@ -27,10 +27,12 @@ used_bpm = at.get_refpts(ring, at.elements.Monitor)
 # --- Load measurements ---
 with h5py.File("./data/measured_orm_loco.h5", "r") as f:
     measured_orm = np.array(f["response_matrix"])  # [BPMs x COR]
+    delta_correctors = np.array(f["full_delta"])
 
 with h5py.File("./data/measured_dispersion_loco.h5", "r") as f:
     measured_eta_x_ = np.array(f["measured_eta_x"])
     measured_eta_y_ = np.array(f["measured_eta_y"])
+    rf_full_step = np.array(f["rf_full_step"])
 
 # --- Remove bad BPMs ---
 bad_bpm_positions = np.array([27, 58, 157, 286])
@@ -53,7 +55,7 @@ measured_orm, removed = remove_bad_bpms(
 
 # --- Prepare configuration for model ORM ---
 Corords = [cor_indices, cor_indices]
-CMstep = [[100e-6] * len(Corords[0]), [100e-6] * len(Corords[1])]
+CMstep = [[delta_correctors] * len(Corords[0]), [delta_correctors] * len(Corords[1])]
 
 
 fit_cfg = FitInitConfig()
@@ -67,31 +69,17 @@ cfg = RMConfig(
     cm_ords=Corords,
     HCMCoupling=HCMCoupling,
     VCMCoupling=VCMCoupling,
-    rfStep=fixed_parameters.rfstep,
+    rfStep=rf_full_step,
     includeDispersion=includeDispersion
 )
 
 # --- Compute model ORM ---
 orm_model = response_matrix(ring, config=cfg)
 
-
-# In[3]:
-
-
 rms_diff = np.sqrt(np.mean((orm_model - measured_orm)**2))
 print(f"RMS difference between model and measured ORM: {rms_diff:.3e} m")
-os.makedirs("data", exist_ok=True)
-plot_matrices(orm_model, measured_orm, titles=None, cmap='viridis', plot_type='3d', save_path="data/orms_comparison.png")
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
+os.makedirs("output", exist_ok=True)
+plot_matrices(orm_model, measured_orm, titles=None, cmap='viridis', plot_type='3d', save_path="output/orms_comparison.png")
 
 
 
