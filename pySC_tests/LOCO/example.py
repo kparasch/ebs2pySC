@@ -1,11 +1,5 @@
-
 #!/usr/bin/env python
 # coding: utf-8
-
-# In[1]:
-
-
-
 def main():
     from pyLOCO.helpers import load_config
     import os
@@ -212,27 +206,57 @@ def main():
 
 
     #fit_dict =  json.load(open("./output/fit_results_all_parameters.json")) ##
-
     inner = last_by_sorted_key(fit_dict)
     quads_fit, skew_fit = get_quads_block(inner)
 
     delta_q = np.asarray(
-    [quads_fit[i] - ring[quad_indices[i]].K for i in range(len(quad_indices))],
-    dtype = float
+        [quads_fit[i] - ring[quad_indices[i]].K for i in range(len(quad_indices))],
+        dtype=float
+    ).ravel()
+
+    length_quad = np.asarray(
+        [ring[quad_indices[i]].Length for i in range(len(quad_indices))],
+        dtype=float
     ).ravel()
 
     delta_skew = np.asarray(
-    [skew_fit[i] - ring[skew_ord[i]].PolynomA[1] for i in range(len(skew_ord))],
-    dtype = float
+        [skew_fit[i] - ring[skew_ord[i]].PolynomA[1] for i in range(len(skew_ord))],
+        dtype=float
     ).ravel()
 
-    delta_dict = {int(indx):delta for indx, delta in zip(quad_indices, - delta_q)}
-    deltas_dict = {int(indx):delta for indx, delta in zip(skew_ord, - delta_skew)}
+    length_skew = np.asarray(
+        [ring[skew_ord[i]].Length for i in range(len(skew_ord))],
+        dtype=float
+    ).ravel()
 
+    # ---- create dictionaries ----
+    delta_dict = {int(indx): delta for indx, delta in zip(quad_indices, -delta_q)}
+    deltas_dict = {int(indx): delta for indx, delta in zip(skew_ord, -delta_skew)}
 
-    delta_dict_all = {"normal_quads":delta_dict, "skew_quads":deltas_dict}
-    json.dump(delta_dict_all, open("./output/delta_quad_skew.json", "w"), indent=4)
+    length_dict = {int(indx): length for indx, length in zip(quad_indices, length_quad)}
+    lengths_dict = {int(indx): length for indx, length in zip(skew_ord, length_skew)}
 
+    # ---- combine all ----
+    data_all = {
+        "normal_quads": {
+            "delta": delta_dict,
+            "length": length_dict
+        },
+        "skew_quads": {
+            "delta": deltas_dict,
+            "length": lengths_dict
+        }
+    }
+
+    # ---- ensure output folder exists ----
+    output_path = Path("./output")
+    output_path.mkdir(parents=True, exist_ok=True)
+
+    # ---- save JSON ----
+    with open(output_path / "quad_skew_deltas_lengths.json", "w") as f:
+        json.dump(data_all, f, indent=4)
+
+    print(f"Saved to {output_path / 'quad_skew_deltas_lengths.json'}")
 
     print('Lattice tune after loco :' , at.get_tune(ring_pyloco))
     _, _, twiss_err = at.get_optics(ring_pyloco, elements_ind)
@@ -247,10 +271,3 @@ if __name__ == '__main__':
     import multiprocessing as mp
     mp.freeze_support()  # optional on macOS, safe to add
     main()
-
-
-# In[ ]:
-
-
-
-
