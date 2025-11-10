@@ -2,7 +2,7 @@ import json
 from interface import Interface
 import numpy as np
 ebs = Interface()
-delta_q_s =  json.load(open("./pySC_tests/LOCO/output/quad_skew_deltas_lengths.json")) ##
+delta_q_s =  json.load(open("./LOCO/output/quad_skew_deltas_lengths.json")) ##
 
 # Normal quads
 normal_deltas = delta_q_s["normal_quads"]["delta"]
