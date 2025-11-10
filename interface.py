@@ -11,7 +11,7 @@ print(present_host)
 master_source = AttributeProxy('sy/ms/1/Frequency')
 
 HRefOrb = AttributeProxy('sr/beam-orbitcor/svd-h/BumpOrbit')
-VRefOrb = AttributeProxy('sr/beam-orbitcor/svd-h/BumpOrbit') # this name is same as above? svd-h to svd-v maybe?
+VRefOrb = AttributeProxy('sr/beam-orbitcor/svd-v/BumpOrbit') 
 
 HBPM = AttributeProxy('srdiag/bpm/all/All_SA_HPosition')
 VBPM = AttributeProxy('srdiag/bpm/all/All_SA_VPosition')
@@ -25,8 +25,8 @@ oct = DeviceProxy('srmag/m-o/all')  # 64 octupoles
 
 # get names in arrays 
 hst_names = hst.CorrectorNames
-vst_names = hst.CorrectorNames #?? I think this will make get_many/set_many not work
-sqp_names = hst.CorrectorNames #??
+vst_names = vst.CorrectorNames 
+sqp_names = sqp.CorrectorNames 
 sext_names = sext.MagnetNames
 quad_names = quad.MagnetNames
 oct_names = oct.MagnetNames
