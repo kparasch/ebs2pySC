@@ -16,7 +16,7 @@ def main():
     ring = at.load_lattice('betamodel.mat', use='betamodel')
     ring.disable_6d()
     elements_ind = at.get_refpts(ring, "*")
-    cor_indices = at.get_refpts(ring, 'S[HFDIJ]*')
+    cor_indices = at.get_refpts(ring, 'S[FIJ]2A*')
     used_bpm = at.get_refpts(ring, at.elements.Monitor)
     quad_indices = at.get_refpts(ring, at.elements.Quadrupole)
     QD3 = at.get_refpts(ring, 'QD3[AE]*')
@@ -35,7 +35,6 @@ def main():
 
     # used_bpm = at.get_refpts(ring, at.elements.Monitor)
 
-    Corords = [cor_indices, cor_indices]
     CAVords = at.get_refpts(ring, at.elements.RFCavity)
 
     # --- Load Measurments ---

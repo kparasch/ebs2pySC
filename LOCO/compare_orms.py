@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 import os
 import h5py
 import numpy as np
@@ -21,7 +15,7 @@ load_config(config_path=config_path)
 ring = at.load_lattice('betamodel.mat', use='betamodel')
 ring.disable_6d()
 # --- Get element indices ---
-cor_indices = at.get_refpts(ring, 'S[HFDIJ]*')
+cor_indices = at.get_refpts(ring, 'S[FIJ]2A*')
 used_bpm = at.get_refpts(ring, at.elements.Monitor)
 
 # --- Load measurements ---
@@ -37,6 +31,8 @@ with h5py.File("./data/measured_dispersion_loco.h5", "r") as f:
 # --- Remove bad BPMs ---
 bad_bpm_positions = np.array([27, 58, 157, 286])
 used_bpms_ords = np.delete(used_bpm, bad_bpm_positions)
+
+Corords = [cor_indices, cor_indices]
 
 measured_eta_x = np.delete(measured_eta_x_, bad_bpm_positions)
 measured_eta_y = np.delete(measured_eta_y_, bad_bpm_positions)
@@ -54,7 +50,7 @@ measured_orm, removed = remove_bad_bpms(
 #measured_orm = np.hstack((measured_orm, eta.reshape(-1, 1)))
 
 # --- Prepare configuration for model ORM ---
-Corords = [cor_indices, cor_indices]
+
 CMstep = [[delta_correctors] * len(Corords[0]), [delta_correctors] * len(Corords[1])]
 
 
@@ -80,6 +76,3 @@ rms_diff = np.sqrt(np.mean((orm_model - measured_orm)**2))
 print(f"RMS difference between model and measured ORM: {rms_diff:.3e} m")
 os.makedirs("output", exist_ok=True)
 plot_matrices(orm_model, measured_orm, titles=None, cmap='viridis', plot_type='3d', save_path="output/orms_comparison.png")
-
-
-
