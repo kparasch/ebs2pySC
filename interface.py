@@ -11,7 +11,7 @@ print(present_host)
 master_source = AttributeProxy('sy/ms/1/Frequency')
 
 HRefOrb = AttributeProxy('sr/beam-orbitcor/svd-h/BumpOrbit')
-VRefOrb = AttributeProxy('sr/beam-orbitcor/svd-h/BumpOrbit')
+VRefOrb = AttributeProxy('sr/beam-orbitcor/svd-h/BumpOrbit') # this name is same as above? svd-h to svd-v maybe?
 
 HBPM = AttributeProxy('srdiag/bpm/all/All_SA_HPosition')
 VBPM = AttributeProxy('srdiag/bpm/all/All_SA_VPosition')
@@ -25,13 +25,27 @@ oct = DeviceProxy('srmag/m-o/all')  # 64 octupoles
 
 # get names in arrays 
 hst_names = hst.CorrectorNames
-vst_names = hst.CorrectorNames
-sqp_names = hst.CorrectorNames
+vst_names = hst.CorrectorNames #?? I think this will make get_many/set_many not work
+sqp_names = hst.CorrectorNames #??
 sext_names = sext.MagnetNames
 quad_names = quad.MagnetNames
 oct_names = oct.MagnetNames
 
 class Interface:
+    wait_after_set = 1  # seconds
+
+    def get_rf_main_frequency(self):
+        """ get master source frequency in Hz"""
+
+        return master_source.read().value
+
+    def set_rf_main_frequency(self, frequency):
+        """ set absolute value of master source frequency in Hz"""
+
+        master_source.write(frequency)
+        time.sleep(self.wait_after_set)
+        return
+
     def get_ref_orbit(self):
         '''
         returns the reference orbit of the machine in two lists/arrays:
@@ -42,8 +56,6 @@ class Interface:
 
         orb_ref_h = HRefOrb.read().value
         orb_ref_v = VRefOrb.read().value
-        
-        time.sleep(1) # 1 second polling time
 
         return orb_ref_h, orb_ref_v
 
@@ -55,10 +67,9 @@ class Interface:
         we should make sure here that we can call this function twice and not get the same reading (i.e. wait that the orbit has refreshed).
         '''
 
+        time.sleep(self.wait_after_set) # 1 second polling time
         orb_h = HBPM.read().value
         orb_v = VBPM.read().value
-        
-        time.sleep(1) # 1 second polling time
 
         return orb_h, orb_v
 
@@ -81,7 +92,8 @@ class Interface:
         waiting time to make sure power supply is settled and eddy currents are decayed to be handled also here.
         '''
         AttributeProxy(name).write(value)
-        time.sleep(1) 
+        time.sleep(self.wait_after_set)
+        return
 
     def get_many(self, names: list) -> dict[str, float]:
         '''
@@ -103,41 +115,41 @@ class Interface:
         for name in names:
             if "hst" in name: 
                 # get set points only if a name is requested
-                if hst_SetPoint is []:
+                if hst_SetPoint == []:
                     hst_SetPoint = hst.CorrectionStrengths.read().w_value # single call to read array
                 # find name index
                 data_k0[name] = hst_SetPoint[hst_names.index(name)]
             if "vst" in name: 
                 # get set points only if a name is requested
-                if vst_SetPoint is []:
+                if vst_SetPoint == []:
                     vst_SetPoint = vst.CorrectionStrengths.read().w_value # single call to read array
                 # find name index
                 data_k0[name] = vst_SetPoint[vst_names.index(name)]
             if "sqp" in name: 
                 # get set points only if a name is requested
-                if sqp_SetPoint is []:
+                if sqp_SetPoint == []:
                     sqp_SetPoint = sqp.CorrectionStrengths.read().w_value # single call to read array
                 # find name index
                 data_k0[name] = sqp_SetPoint[sqp_names.index(name)]
             if "m-s" in name: 
                 # get set points only if a name is requested
-                if sext_SetPoint is []:
+                if sext_SetPoint == []:
                     sext_SetPoint = sext.CorrectionStrengths.read().w_value # single call to read array
                 # find name index
                 data_k0[name] = sext_SetPoint[sext_names.index(name)]
             if "m-q" in name: 
                 # get set points only if a name is requested
-                if quad_SetPoint is []:
+                if quad_SetPoint == []:
                     quad_SetPoint = quad.CorrectionStrengths.read().w_value # single call to read array
                 # find name index
                 data_k0[name] = quad_SetPoint[quad_names.index(name)]
             if "m-o" in name: 
                 # get set points only if a name is requested
-                if oct_SetPoint is []:
+                if oct_SetPoint == []:
                     oct_SetPoint = oct.CorrectionStrengths.read().w_value # single call to read array
                 # find name index
                 data_k0[name] = oct_SetPoint[oct_names.index(name)]
-        
+
         return data_k0
 
     def set_many(self, data: dict[str, float]):
@@ -149,7 +161,7 @@ class Interface:
 
         waiting time to make sure power supply is settled and eddy currents are decayed to be handled also here.
         '''
-        
+
         # init set points
         hst_SetPoint = []
         vst_SetPoint = []
@@ -218,4 +230,5 @@ class Interface:
         if oct_apply:
             oct.CorrectionStrengths = oct_SetPoint
 
-        pass
+        time.sleep(self.wait_after_set)
+        return
