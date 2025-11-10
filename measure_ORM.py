@@ -24,7 +24,12 @@ response_matrix = pySC.ResponseMatrix.from_json('ideal_orm.json')
 mapping = json.load(open('name_mapping.json'))
 response_matrix.input_names = [mapping[pySC_name] for pySC_name in response_matrix.input_names]
 
-corrector_names = response_matrix.input_names #[:10]
+corrector_names = []
+for name in response_matrix.input_names:
+    if '-sf2' in name and '-a' in name:
+        corrector_names.append(name)
+
+# corrector_names = response_matrix.input_names #[:10]
 
 generator = measure_ORM(interface=ebs, corrector_names=corrector_names, delta=delta,
                         shots_per_orbit=1, bipolar=True, skip_save=False, folder_to_save=data_folder)
