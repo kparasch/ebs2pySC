@@ -16,7 +16,7 @@ def main():
     ring = at.load_lattice('betamodel.mat', use='betamodel')
     ring.disable_6d()
     elements_ind = at.get_refpts(ring, "*")
-    cor_indices = at.get_refpts(ring, 'S[HFDIJ]*')
+    cor_indices = at.get_refpts(ring, 'S[FIJ]2A*')
     used_bpm = at.get_refpts(ring, at.elements.Monitor)
     quad_indices = at.get_refpts(ring, at.elements.Quadrupole)
     QD3 = at.get_refpts(ring, 'QD3[AE]*')
@@ -61,12 +61,6 @@ def main():
     bad_bpm_positions = np.array([27, 58, 157, 286])
     Noise_BPMx_cleaned = np.delete(Noise_BPMx, bad_bpm_positions)
     Noise_BPMy_cleaned = np.delete(Noise_BPMy, bad_bpm_positions)
-    bad_cor_positions = np.array(
-        [2, 11, 20, 29, 38, 47, 56, 65, 74, 83, 92, 101, 110, 119, 128, 137, 146, 155, 164, 173, 182, 191, 200, 209,
-         218, 227, 236, 245, 254, 263, 272, 281]
-        )
-    clean_cor_indices = np.delete(cor_indices, bad_cor_positions)
-    Corords = [clean_cor_indices, clean_cor_indices]
     sigma_w = np.concatenate((Noise_BPMx_cleaned, Noise_BPMy_cleaned))[:,
               np.newaxis]  # Note: weight matrix shape for pyloco
     used_bpms_ords = np.delete(used_bpm, bad_bpm_positions)
@@ -85,18 +79,13 @@ def main():
                                             total_bpms=len(used_bpm),
                                             axis=0,
                                             input_type="positions")
-
-    measured_orm, removed = remove_bad_bpms(measured_orm,
-                                            bad_cor_positions,
-                                            total_bpms=len(clean_cor_indices),
-                                            axis=1,
-                                            input_type="positions")
-
     # If include dispersion is true
 
     # eta = np.concatenate([measured_eta_x, measured_eta_y])
     # measured_orm = np.hstack((measured_orm, eta.reshape(-1, 1)))
 
+    CMstep = [[100e-6] * len(Corords[0]),
+              [100e-6] * len(Corords[1])]
 
     CMstep = [[delta_correctors] * len(Corords[0]),
               [delta_correctors] * len(Corords[1])]

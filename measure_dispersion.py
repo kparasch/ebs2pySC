@@ -1,6 +1,8 @@
 from interface import Interface
 import numpy as np
 import time
+from pathlib import Path
+from interface import data_folder
 
 ebs=Interface()
 
@@ -55,8 +57,8 @@ print(f"\ntime: {executing_time:.3f} seconds")
 
 import h5py
 import os
-os.makedirs("./data", exist_ok=True)
-with h5py.File("./data/measured_dispersion_loco.h5", "w") as f:
+#os.makedirs("./data", exist_ok=True)
+with h5py.File(data_folder / Path("measured_dispersion_loco.h5"), "w") as f:
     f.create_dataset("measured_eta_x", data=mean_orbit_x)
     f.create_dataset("measured_eta_y", data=mean_orbit_y)
     f.attrs["n_orbits"] = n_orbits

@@ -15,7 +15,7 @@ load_config(config_path=config_path)
 ring = at.load_lattice('betamodel.mat', use='betamodel')
 ring.disable_6d()
 # --- Get element indices ---
-cor_indices = at.get_refpts(ring, 'S[HFDIJ]*')
+cor_indices = at.get_refpts(ring, 'S[FIJ]2A*')
 used_bpm = at.get_refpts(ring, at.elements.Monitor)
 
 # --- Load measurements ---
@@ -31,10 +31,8 @@ with h5py.File("./data/measured_dispersion_loco.h5", "r") as f:
 # --- Remove bad BPMs ---
 bad_bpm_positions = np.array([27, 58, 157, 286])
 used_bpms_ords = np.delete(used_bpm, bad_bpm_positions)
-bad_cor_positions = np.array([2, 11, 20, 29, 38, 47, 56, 65, 74, 83, 92, 101, 110, 119, 128, 137, 146, 155, 164, 173, 182, 191, 200, 209, 218, 227, 236, 245, 254, 263, 272, 281]
-)
-clean_cor_indices = np.delete(cor_indices, bad_cor_positions)
-Corords = [clean_cor_indices, clean_cor_indices]
+
+Corords = [cor_indices, cor_indices]
 
 measured_eta_x = np.delete(measured_eta_x_, bad_bpm_positions)
 measured_eta_y = np.delete(measured_eta_y_, bad_bpm_positions)
@@ -48,11 +46,6 @@ measured_orm, removed = remove_bad_bpms(
     input_type="positions"
 )
 
-measured_orm, removed = remove_bad_bpms(measured_orm,
-                                            bad_cor_positions,
-                                            total_bpms=len(clean_cor_indices),
-                                            axis=1,
-                                            input_type="positions")
 # if include dispersion is true
 #measured_orm = np.hstack((measured_orm, eta.reshape(-1, 1)))
 
