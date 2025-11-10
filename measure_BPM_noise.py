@@ -1,7 +1,8 @@
 from interface import Interface
 import numpy as np
 import time
-
+from pathlib import Path
+from interface import data_folder
 
 ebs=Interface()
 
@@ -37,8 +38,8 @@ print(f"\ntime: {executing_time:.3f} seconds")
 
 import h5py
 import os
-os.makedirs("./data", exist_ok=True)
-with h5py.File("./data/measured_BPM_noise_loco.h5", "w") as f:
+#os.makedirs(folder_to_save, exist_ok=True)
+with h5py.File(data_folder / Path("measured_BPM_noise_loco.h5"), "w") as f:
     f.create_dataset("mean_orbit_x", data=mean_orbit_x)
     f.create_dataset("mean_orbit_y", data=mean_orbit_y)
     f.create_dataset("Noise_BPMx", data=std_orbit_x)

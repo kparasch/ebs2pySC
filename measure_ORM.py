@@ -6,10 +6,12 @@ from interface import Interface
 import logging
 import json
 from datetime import datetime
+from pathlib import Path
+from interface import data_folder
 
 pySC.disable_pySC_rich()
 
-start_measurement=False
+start_measurement = False
 delta = 100e-6
 
 #logging.getLogger('pySC.apps.response').setLevel(logging.DEBUG)
@@ -25,7 +27,7 @@ response_matrix.input_names = [mapping[pySC_name] for pySC_name in response_matr
 corrector_names = response_matrix.input_names #[:10]
 
 generator = measure_ORM(interface=ebs, corrector_names=corrector_names, delta=delta,
-                        shots_per_orbit=1, bipolar=True, skip_save=False)
+                        shots_per_orbit=1, bipolar=True, skip_save=False, folder_to_save=data_folder)
 
 if start_measurement:
     for code, measurement in generator:
@@ -42,4 +44,4 @@ if start_measurement:
                  'full_delta': delta,
                  'timestamp': measurement.response_data.timestamp}
     timestamp_str = datetime.fromtimestamp(save_dict['timestamp']).strftime('%Y%m%d_%H%M%S')
-    dict_to_h5(save_dict, f'data/ORM_for_pyLOCO_{timestamp_str}.h5')
+    dict_to_h5(save_dict, data_folder / Path(f'ORM_for_pyLOCO_{timestamp_str}.h5'))

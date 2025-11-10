@@ -1,6 +1,8 @@
 from tango import AttributeProxy, DeviceProxy
 import os
 import time
+from pathlib import Path
+data_folder = Path('./data')
 
 os.environ['TANGO_HOST'] = 'acs.esrf.fr:10000,acs.esrf.fr:11000'
 # os.environ['TANGO_HOST'] = 'ebs-simu-1:10000'
