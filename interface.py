@@ -123,37 +123,37 @@ class Interface:
         for name in names:
             if "hst" in name: 
                 # get set points only if a name is requested
-                if hst_SetPoint == []:
+                if len(hst_SetPoint) == 0:
                     hst_SetPoint = hst.read_attribute("Strengths").w_value # single call to read array
                 # find name index
                 data_k0[name] = hst_SetPoint[hst_names.index(name)]
             if "vst" in name: 
                 # get set points only if a name is requested
-                if vst_SetPoint == []:
+                if len(vst_SetPoint) == 0:
                     vst_SetPoint = vst.read_attribute("Strengths").w_value # single call to read array
                 # find name index
                 data_k0[name] = vst_SetPoint[vst_names.index(name)]
             if "sqp" in name: 
                 # get set points only if a name is requested
-                if sqp_SetPoint == []:
+                if len(sqp_SetPoint) == 0:
                     sqp_SetPoint = sqp.read_attribute("CorrectionStrengths").w_value # single call to read array
                 # find name index
                 data_k0[name] = sqp_SetPoint[sqp_names.index(name)]
             if "m-s" in name: 
                 # get set points only if a name is requested
-                if sext_SetPoint == []:
+                if len(sext_SetPoint) == 0:
                     sext_SetPoint = sext.read_attribute("CorrectionStrengths").w_value # single call to read array
                 # find name index
                 data_k0[name] = sext_SetPoint[sext_names.index(name)]
             if "m-q" in name: 
                 # get set points only if a name is requested
-                if quad_SetPoint == []:
+                if len(quad_SetPoint) == 0:
                     quad_SetPoint = quad.read_attribute("CorrectionStrengths").w_value # single call to read array
                 # find name index
                 data_k0[name] = quad_SetPoint[quad_names.index(name)]
             if "m-o" in name: 
                 # get set points only if a name is requested
-                if oct_SetPoint == []:
+                if len(oct_SetPoint) == 0:
                     oct_SetPoint = oct.read_attribute("CorrectionStrengths").w_value # single call to read array
                 # find name index
                 data_k0[name] = oct_SetPoint[oct_names.index(name)]
@@ -190,37 +190,37 @@ class Interface:
         # loop values to change
         for key, value in data.items():
             if "hst" in key:
-                if hst_SetPoint == []:
+                if len(hst_SetPoint) == 0:
                     hst_SetPoint = hst.read_attribute("Strengths").w_value # single call to read array
                     hst_apply = True
                 hst_SetPoint[hst_names.index(key)] = value
 
             if "vst" in key:
-                if vst_SetPoint == []:
+                if len(vst_SetPoint) == 0:
                     vst_SetPoint = vst.read_attribute("Strengths").w_value # single call to read array
                     vst_apply = True
                 vst_SetPoint[vst_names.index(key)] = value
 
             if "sqp" in key:
-                if sqp_SetPoint == []:
+                if len(sqp_SetPoint) == 0:
                     sqp_SetPoint = sqp.read_attribute("CorrectionStrengths").w_value # single call to read array
                     sqp_apply = True
                 sqp_SetPoint[sqp_names.index(key)] = value
 
             if "m-s" in key:
-                if sext_SetPoint == []:
+                if len(sext_SetPoint) == 0:
                     sext_SetPoint = sext.read_attribute("CorrectionStrengths").w_value # single call to read array
                     sext_apply = True
                 sext_SetPoint[sext_names.index(key)] = value
 
             if "m-q" in key:
-                if quad_SetPoint == []:
+                if len(quad_SetPoint) == 0:
                     quad_SetPoint = quad.read_attribute("CorrectionStrengths").w_value # single call to read array
                     quad_apply = True
                 quad_SetPoint[quad_names.index(key)] = value
 
             if "m-o" in key:
-                if oct_SetPoint == []:
+                if len(oct_SetPoint) == 0:
                     oct_SetPoint = oct.read_attribute("CorrectionStrengths").w_value # single call to read array
                     oct_apply = True
                 oct_SetPoint[oct_names.index(key)] = value
