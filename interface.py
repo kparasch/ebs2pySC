@@ -2,7 +2,7 @@ from tango import AttributeProxy, DeviceProxy
 import os
 import time
 from pathlib import Path
-data_folder = Path('./data')
+data_folder = Path('/machfs/MDT/2025/2025_11_10/ebs2pySC/data')
 
 os.environ['TANGO_HOST'] = 'acs.esrf.fr:10000,acs.esrf.fr:11000'
 # os.environ['TANGO_HOST'] = 'ebs-simu-1:10000'
@@ -34,15 +34,15 @@ quad_names = quad.MagnetNames
 oct_names = oct.MagnetNames
 
 class Interface:
-    wait_after_set = 1  # seconds
+    wait_after_set = 3.0  # seconds
     quad_wait_time = 5  # seconds
     rf_wait_time = 5 # seconds
-    orbit_wait_time = 1 # seconds
+    orbit_wait_time = 1.01 # seconds
 
     def get_rf_main_frequency(self):
         """ get master source frequency in Hz"""
 
-        return master_source.read().value
+        return master_source.read().w_value
 
     def set_rf_main_frequency(self, frequency):
         """ set absolute value of master source frequency in Hz"""
