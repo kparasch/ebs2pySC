@@ -100,7 +100,7 @@ def main():
     nHorCOR = len(Corords[0])
     nVerCOR = len(Corords[1])
     nHBPM = nVBPM = len(used_bpms_ords)
-    nIter = 1
+    nIter = 10
 
     '''
     fit_list = [
