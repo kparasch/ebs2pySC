@@ -33,6 +33,9 @@ oct_names = oct.MagnetNames
 
 class Interface:
     wait_after_set = 1  # seconds
+    quad_wait_time = 5  # seconds
+    rf_wait_time = 5 # seconds
+    orbit_wait_time = 1 # seconds
 
     def get_rf_main_frequency(self):
         """ get master source frequency in Hz"""
@@ -43,7 +46,7 @@ class Interface:
         """ set absolute value of master source frequency in Hz"""
 
         master_source.write(frequency)
-        time.sleep(self.wait_after_set)
+        time.sleep(self.rf_wait_time)
         return
 
     def get_ref_orbit(self):
@@ -67,7 +70,7 @@ class Interface:
         we should make sure here that we can call this function twice and not get the same reading (i.e. wait that the orbit has refreshed).
         '''
 
-        time.sleep(self.wait_after_set) # 1 second polling time
+        time.sleep(self.orbit_wait_time) # 1 second polling time
         orb_h = HBPM.read().value
         orb_v = VBPM.read().value
 
@@ -92,7 +95,10 @@ class Interface:
         waiting time to make sure power supply is settled and eddy currents are decayed to be handled also here.
         '''
         AttributeProxy(name).write(value)
-        time.sleep(self.wait_after_set)
+        if "m-q" in name:
+            time.sleep(max(self.quad_wait_time, self.wait_after_set))
+        else:
+            time.sleep(self.wait_after_set)
         return
 
     def get_many(self, names: list) -> dict[str, float]:
@@ -161,6 +167,7 @@ class Interface:
 
         waiting time to make sure power supply is settled and eddy currents are decayed to be handled also here.
         '''
+        wait_time = self.wait_after_set
 
         # init set points
         hst_SetPoint = []
@@ -224,11 +231,12 @@ class Interface:
         if sqp_apply:
             sqp.CorrectionStrengths = sqp_SetPoint
         if quad_apply:
+            wait_time = max(wait_time, self.quad_wait_time)
             quad.CorrectionStrengths = quad_SetPoint
         if sext_apply:
             sext.CorrectionStrengths = sext_SetPoint
         if oct_apply:
             oct.CorrectionStrengths = oct_SetPoint
 
-        time.sleep(self.wait_after_set)
+        time.sleep(wait_time)
         return
