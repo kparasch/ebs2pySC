@@ -2,6 +2,7 @@ lattice:
   lattice_file: betamodel.mat
   simulator: at
   use: betamodel
+  naming: Device
 
 magnets:
   quadrupoles:
