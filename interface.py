@@ -2,7 +2,8 @@ from tango import AttributeProxy, DeviceProxy
 import os
 import time
 from pathlib import Path
-data_folder = Path('/machfs/MDT/2025/2025_11_10/ebs2pySC/data')
+data_folder = Path('/machfs/MDT/2026/2026_01_16/pySC_pyLOCO_tests/ebs2pySC/data')
+# data_folder = Path('/machfs/MDT/2025/2025_11_10/ebs2pySC/data')
 
 os.environ['TANGO_HOST'] = 'acs.esrf.fr:10000,acs.esrf.fr:11000'
 # os.environ['TANGO_HOST'] = 'ebs-simu-1:10000'
