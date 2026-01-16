@@ -58,4 +58,6 @@ tuning:
       - octupoles: B4L
 
     bba_magnets:
-      - quadrupoles: B2L
+      #- quadrupoles: B2L
+      - sextupoles: A2L
+      - correctors: A2L

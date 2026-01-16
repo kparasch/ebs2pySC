@@ -16,7 +16,7 @@ ebs = Interface()
 with open('bba_config_tango.json','r') as fp:
     bba_config = json.load(fp)
 
-bpm_name = "122"
+bpm_name = "srdiag/beam-position/c05-05"
 one_config = bba_config[bpm_name]
 
 generator = measure_bba(interface=ebs, bpm_name=bpm_name, config=one_config,
