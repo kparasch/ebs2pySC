@@ -2,11 +2,12 @@ from tango import AttributeProxy, DeviceProxy
 import os
 import time
 from pathlib import Path
+import numpy as np
 data_folder = Path('/machfs/MDT/2026/2026_01_16/pySC_pyLOCO_tests/ebs2pySC/data')
 # data_folder = Path('/machfs/MDT/2025/2025_11_10/ebs2pySC/data')
 
-os.environ['TANGO_HOST'] = 'acs.esrf.fr:10000,acs.esrf.fr:11000'
-# os.environ['TANGO_HOST'] = 'ebs-simu-1:10000'
+# os.environ['TANGO_HOST'] = 'acs.esrf.fr:10000,acs.esrf.fr:11000'
+os.environ['TANGO_HOST'] = 'ebs-simu-3:10000'
 
 present_host = os.environ['TANGO_HOST']
 print(present_host)
@@ -18,6 +19,11 @@ VRefOrb = AttributeProxy('sr/beam-orbitcor/svd-v/BumpOrbit')
 
 HBPM = AttributeProxy('srdiag/bpm/all/All_SA_HPosition')
 VBPM = AttributeProxy('srdiag/bpm/all/All_SA_VPosition')
+TBT_buffer_size = AttributeProxy('srdiag/bpm/all/TBT_BufSize')
+# HTBT = AttributeProxy('sys/ringsimulator/ebs/HPositionsTbT')
+# VTBT = AttributeProxy('sys/ringsimulator/ebs/VPositionsTbT')
+HTBT = AttributeProxy('srdiag/bpm/all/All_TBT_HPosition')
+VTBT = AttributeProxy('srdiag/bpm/all/All_TBT_VPosition')
 
 hst = DeviceProxy('srmag/hst/all')  # 384 hor steerers (include DQ hor steerer)
 vst = DeviceProxy('srmag/vst/all')  # 288 ver steerers
@@ -243,3 +249,30 @@ class Interface:
 
         time.sleep(wait_time)
         return
+
+class InterfaceInjection(Interface):
+    tbt_wait_time = 1
+    n_turns = 1
+
+    def get_orbit(self):
+        time.sleep(self.tbt_wait_time) # 1 second polling time
+        orb_h = HTBT.read().value
+        orb_v = VTBT.read().value
+
+        tbt_buf = TBT_buffer_size.read().value
+        n_bpm = int(len(orb_h)/tbt_buf)
+
+        orb_h = orb_h.reshape(n_bpm, tbt_buf)
+        orb_v = orb_v.reshape(n_bpm, tbt_buf)
+
+        assert self.n_turns <= orb_h.shape[1]
+        # return orb_h, orb_v
+        return orb_h[:, :self.n_turns], orb_v[:, :self.n_turns]
+
+    def get_ref_orbit(self):
+        orb_ref_h = HRefOrb.read().value
+        orb_ref_v = VRefOrb.read().value
+
+        x_ref = np.repeat(orb_ref_h[:, np.newaxis], self.n_turns, axis=1)
+        y_ref = np.repeat(orb_ref_v[:, np.newaxis], self.n_turns, axis=1)
+        return x_ref, y_ref

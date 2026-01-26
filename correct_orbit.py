@@ -5,7 +5,7 @@ import json
 import numpy as np
 
 
-apply=False
+apply=True
 
 ebs = Interface()
 # load response matrix from file 
