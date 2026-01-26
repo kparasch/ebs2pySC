@@ -3,6 +3,7 @@ import os
 import time
 from pathlib import Path
 import numpy as np
+import inject
 data_folder = Path('/machfs/MDT/2026/2026_01_16/pySC_pyLOCO_tests/ebs2pySC/data')
 # data_folder = Path('/machfs/MDT/2025/2025_11_10/ebs2pySC/data')
 
@@ -256,7 +257,11 @@ class InterfaceInjection(Interface):
     n_turns = 1
 
     def get_orbit(self):
+        if self.trigger_injection:
+            inject.trigger_injection(n_shots=1)
+
         time.sleep(self.tbt_wait_time) # 1 second polling time
+
         orb_h = HTBT.read().value
         orb_v = VTBT.read().value
 
