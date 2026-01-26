@@ -252,6 +252,7 @@ class Interface:
 
 class InterfaceInjection(Interface):
     tbt_wait_time = 1
+    trigger_injection = False
     n_turns = 1
 
     def get_orbit(self):
@@ -267,7 +268,7 @@ class InterfaceInjection(Interface):
 
         assert self.n_turns <= orb_h.shape[1]
         # return orb_h, orb_v
-        return orb_h[:, :self.n_turns], orb_v[:, :self.n_turns]
+        return orb_h[:, :self.n_turns].flatten(order='F'), orb_v[:, :self.n_turns].flatten(order='F')
 
     def get_ref_orbit(self):
         orb_ref_h = HRefOrb.read().value
@@ -275,4 +276,4 @@ class InterfaceInjection(Interface):
 
         x_ref = np.repeat(orb_ref_h[:, np.newaxis], self.n_turns, axis=1)
         y_ref = np.repeat(orb_ref_v[:, np.newaxis], self.n_turns, axis=1)
-        return x_ref, y_ref
+        return x_ref.flatten(order='F'), y_ref.flatten(order='F')
