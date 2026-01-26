@@ -10,9 +10,9 @@ SC = generate_SC('betamodel_conf_ideal.yaml', seed=1, sigma_truncate=3)
 
 interface = pySCInjectionInterface(SC=SC)
 interface.n_turns = n_turns
-interface.set('6/B1L', 13.7e-6)
-interface.set('175/B1L', 22e-6)
-interface.set('959/A1L', 9e-6)
+interface.set('srmag/vst-sh1/c04-a/B1L', 13.7e-6)
+interface.set('srmag/vst-sh3/c12-e/B1L', 22e-6)
+interface.set('srmag/m-sd1/c03-a/A1L', 9e-6)
 
 ref_x, ref_y = interface.get_ref_orbit()
 
@@ -24,9 +24,14 @@ print()
 
 x1, y1 = interface.get_orbit()
 print(f'RMS before H: {np.std(x1-ref_x)*1e6} μm, V: {np.std(y1-ref_y)*1e6} μm')
-trims = orbit_correction(interface=interface, response_matrix=response_matrix, reference=reference, method='micado', parameter=3, apply=True)
+trims = orbit_correction(interface=interface, response_matrix=response_matrix,
+                         reference=reference, method='svd_cutoff', parameter=1e-3, apply=True,
+                         plane='H')
 
-print(trims)
+# print(trims)
+trims = orbit_correction(interface=interface, response_matrix=response_matrix,
+                         reference=reference, method='svd_cutoff', parameter=1e-3, apply=True,
+                         plane='V')
 
 x2, y2 = interface.get_orbit()
 print(f'RMS after H: {np.std(x2-ref_x)*1e6} μm, V: {np.std(y2-ref_y)*1e6} μm')
@@ -34,9 +39,11 @@ print(f'RMS after H: {np.std(x2-ref_x)*1e6} μm, V: {np.std(y2-ref_y)*1e6} μm')
 #######################
 
 print()
-interface.set_many({'6/B1L': 13.7e-6, '175/B1L': 0, '959/A1L': 0})
+interface.set_many({'srmag/vst-sh1/c04-a/B1L': 13.7e-6,
+                    'srmag/vst-sh3/c12-e/B1L': 0,
+                    'srmag/m-sd1/c03-a/A1L': 0})
 
-my_corrs = ['175/B1L']
+my_corrs = ['srmag/vst-sh3/c12-e/B1L']
 print(f'Correct now only with correctors {my_corrs}, but do not apply')
 response_matrix.disable_all_inputs_but(my_corrs)
 trims = orbit_correction(interface=interface, response_matrix=response_matrix, reference=reference, method='micado', parameter=1, apply=False)
